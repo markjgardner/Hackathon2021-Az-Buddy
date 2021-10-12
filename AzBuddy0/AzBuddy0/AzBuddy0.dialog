@@ -15,59 +15,30 @@
       },
       "actions": [
         {
-          "$kind": "Microsoft.Foreach",
+          "$kind": "Microsoft.TextInput",
           "$designer": {
-            "id": "518944",
-            "name": "Loop: for each item"
+            "id": "JOQIkk"
           },
-          "itemsProperty": "turn.Activity.membersAdded",
-          "actions": [
-            {
-              "$kind": "Microsoft.IfCondition",
-              "$designer": {
-                "id": "641773",
-                "name": "Branch: if/else"
-              },
-              "condition": "string(dialog.foreach.value.id) != string(turn.Activity.Recipient.id)",
-              "actions": [
-                {
-                  "$kind": "Microsoft.IfCondition",
-                  "$designer": {
-                    "id": "Y1t1k4"
-                  },
-                  "condition": "exists(user.greeted)",
-                  "actions": [
-                    {
-                      "$kind": "Microsoft.SendActivity",
-                      "$designer": {
-                        "id": "yXbfKT"
-                      },
-                      "activity": "${SendActivity_GreetingReturningUser()}"
-                    }
-                  ],
-                  "elseActions": [
-                    {
-                      "$kind": "Microsoft.SendActivity",
-                      "$designer": {
-                        "id": "XZRD8m"
-                      },
-                      "activity": "${SendActivity_GreetingNewUser()}"
-                    },
-                    {
-                      "$kind": "Microsoft.SetProperty",
-                      "$designer": {
-                        "id": "eV86Nf"
-                      },
-                      "property": "user.greeted",
-                      "value": "true"
-                    }
-                  ]
-                }
-              ]
-            }
-          ],
-          "value": "dialog.foreach.value",
-          "index": "dialog.foreach.index"
+          "disabled": false,
+          "maxTurnCount": 3,
+          "alwaysPrompt": true,
+          "allowInterruptions": false,
+          "prompt": "${TextInput_Prompt_JOQIkk()}",
+          "unrecognizedPrompt": "",
+          "invalidPrompt": "",
+          "property": "$resource.name",
+          "value": "${this.value}"
+        },
+        {
+          "$kind": "Microsoft.BeginDialog",
+          "$designer": {
+            "id": "E4J686"
+          },
+          "activityProcessed": true,
+          "dialog": "CreateAzResource",
+          "options": {
+            "resourceName": "${resource.name}"
+          }
         }
       ]
     },

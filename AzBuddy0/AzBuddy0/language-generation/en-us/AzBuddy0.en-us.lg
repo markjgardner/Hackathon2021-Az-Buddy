@@ -1,27 +1,5 @@
 [import](common.lg)
 
-# SendActivity_GreetingNewUser()
-[Activity
-    Attachments = ${SendActivity_GreetingNewUser_attachment_heroCard()}
-]
-
-# SendActivity_GreetingNewUser_attachment_heroCard()
-[HeroCard
-  text = ${GreetingNewUser_text()}
-  buttons = ${GreetingBotTourIntent_action()}
-]
-
-# SendActivity_GreetingReturningUser()
-[Activity
-    Attachments = ${SendActivity_GreetingReturningUser_attachment_heroCard()}
-]
-
-# SendActivity_GreetingReturningUser_attachment_heroCard()
-[HeroCard
-  text = ${GreetingReturningUser_text()}
-  buttons = ${GreetingBotTourIntent_action()}
-]
-
 # GreetingNewUser_text()
 - 🖐️ Hey, there! How can I help you today?
 - 🖐️ Hi! How can I help?
@@ -132,3 +110,11 @@
 
 # SendActivity_ChooseNoIntent()
 - Sure, no worries.
+
+# TextInput_Prompt_JOQIkk()
+[Activity
+    Text = ${TextInput_Prompt_JOQIkk_text()}
+]
+
+# TextInput_Prompt_JOQIkk_text()
+- Hello, what azure resource would you like to create?

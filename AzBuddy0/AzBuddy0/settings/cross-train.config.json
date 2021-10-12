@@ -2,6 +2,10 @@
   "AzBuddy0.en-us": {
     "rootDialog": true,
     "triggers": {
+      "": [
+        "CreateAzResource.en-us",
+        "ChitchatDialog.en-us"
+      ],
       "BotTour": [
         "BotTourDialog.en-us"
       ],
@@ -13,9 +17,6 @@
       ],
       "Help": [
         "HelpDialog.en-us"
-      ],
-      "": [
-        "ChitchatDialog.en-us"
       ]
     }
   }
