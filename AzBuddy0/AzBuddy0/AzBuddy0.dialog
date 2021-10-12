@@ -26,19 +26,27 @@
           "prompt": "${TextInput_Prompt_JOQIkk()}",
           "unrecognizedPrompt": "",
           "invalidPrompt": "",
-          "property": "$resource.name",
-          "value": "${this.value}"
+          "property": "turn.resource",
+          "value": "=turn.recognized.entities.AzureResource[0][0]"
         },
         {
           "$kind": "Microsoft.BeginDialog",
           "$designer": {
-            "id": "E4J686"
+            "id": "ZpQIaW"
           },
           "activityProcessed": true,
           "dialog": "CreateAzResource",
           "options": {
-            "resourceName": "${resource.name}"
+            "resourceName": "=turn.resource"
           }
+        },
+        {
+          "$kind": "Microsoft.RepeatDialog",
+          "$designer": {
+            "id": "tVJfqy"
+          },
+          "activityProcessed": true,
+          "allowLoop": true
         }
       ]
     },

@@ -6,4 +6,4 @@
 ]
 
 # SendActivity_Z910YP_text()
-- You want to create a ${dialog.requiredProperties.resourceName}
+- You want to create a ${dialog.resourceName}

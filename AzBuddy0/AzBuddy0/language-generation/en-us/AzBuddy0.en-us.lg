@@ -117,4 +117,18 @@
 ]
 
 # TextInput_Prompt_JOQIkk_text()
-- Hello, what azure resource would you like to create?
+- What azure resource would you like to create?
+# LogAction_Text_k2PGib()
+[Activity
+    Text = ${LogAction_Text_k2PGib_text()}
+]
+
+# LogAction_Text_k2PGib_text()
+- ${turn.activity.name}
+# LogAction_Text_0BD04y()
+[Activity
+    Text = ${LogAction_Text_0BD04y_text()}
+]
+
+# LogAction_Text_0BD04y_text()
+- ${turn.activity.entities}

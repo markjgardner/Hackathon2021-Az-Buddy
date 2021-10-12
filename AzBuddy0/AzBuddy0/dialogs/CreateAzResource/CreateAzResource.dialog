@@ -22,12 +22,6 @@
             "id": "Z910YP"
           },
           "activity": "${SendActivity_Z910YP()}"
-        },
-        {
-          "$kind": "Microsoft.SetProperty",
-          "$designer": {
-            "id": "cGydFy"
-          }
         }
       ]
     }
