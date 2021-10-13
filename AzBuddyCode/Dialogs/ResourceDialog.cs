@@ -47,6 +47,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             {
                 case "resource group":
                     return await stepContext.BeginDialogAsync(nameof(ResourceGroupDialog), null, cancellationToken);
+                case "storage account":
+                    return await stepContext.BeginDialogAsync(nameof(StorageAccountDialog), null, cancellationToken);
             }
 
             await stepContext.Context.SendActivityAsync(
