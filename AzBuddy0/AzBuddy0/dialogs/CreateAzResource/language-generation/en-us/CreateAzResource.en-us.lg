@@ -1,0 +1,9 @@
+[import](common.lg)
+
+# SendActivity_Z910YP()
+[Activity
+    Text = ${SendActivity_Z910YP_text()}
+]
+
+# SendActivity_Z910YP_text()
+- You want to create a ${dialog.requiredProperties.resourceName}
