@@ -19,13 +19,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         public ResourceGroupDialog(string dialogID) 
             : base(dialogID)
         {   
-            var waterfallSteps =  new WaterfallStep[]
-            {
-                NameStepAsync,
-                LocationStepAsync,
-                CreateStepAsync
-            };
-
             InitialDialogId = nameof(WaterfallDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
