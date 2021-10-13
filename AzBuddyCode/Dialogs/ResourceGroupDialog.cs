@@ -9,6 +9,8 @@ using Microsoft.Bot.Builder.Dialogs.Choices;
 using Azure.Identity;
 using Azure.ResourceManager;
 using Azure.ResourceManager.Resources;
+using Azure.ResourceManager.Resources.Models;
+using System;
 
 namespace Microsoft.BotBuilderSamples.Dialogs
 {
@@ -55,7 +57,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 new PromptOptions
                 {
                     Prompt = MessageFactory.Text("Please enter the azure location."),
-                    Choices = ChoiceFactory.ToChoices(new List<string> { "EastUS", "WestUS", "EastUS2" }),
+                    Choices = ChoiceFactory.ToChoices(new List<string> { Location.EastUS.Name, "WestUS", "EastUS2" }),
                 }, cancellationToken);
         }
 
@@ -68,17 +70,28 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             await stepContext.Context.SendActivityAsync(
                 MessageFactory.Text($"Creating Resource Group {name} in {location}"), 
                 cancellationToken);
-
-            var armClient = new ArmClient(new DefaultAzureCredential());
-            var subscription = armClient.DefaultSubscription;
-            var resourceGroupContainer = subscription.GetResourceGroups();
-            var resourceGroupData = new ResourceGroupData(location);
-            var resourceGroup = await resourceGroupContainer.CreateOrUpdateAsync(name, resourceGroupData);
-            
-            await stepContext.Context.SendActivityAsync(
-                MessageFactory.Text($"Resource Group {name} in {location} created."), 
+            try{
+                var armClient = new ArmClient(new DefaultAzureCredential());
+                var subscription = armClient.DefaultSubscription;
+                var resourceGroupContainer = subscription.GetResourceGroups();
+                var resourceGroupData = new ResourceGroupData(location);
+                var resourceGroup = await resourceGroupContainer.CreateOrUpdateAsync(
+                    name, 
+                    resourceGroupData, 
+                    true, 
+                    cancellationToken);
+                
+                await stepContext.Context.SendActivityAsync(
+                    MessageFactory.Text($"Resource Group {name} as {resourceGroup.Id}"), 
+                    cancellationToken);
+            }
+            catch(Exception ex)
+            {
+                await stepContext.Context.SendActivityAsync(
+                MessageFactory.Text($"An error occured createing resource group {name}. Message {ex.Message}"), 
                 cancellationToken);
-
+            }
+            
             // Remember to call EndAsync to indicate to the runtime that this is the end of our waterfall.
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }
