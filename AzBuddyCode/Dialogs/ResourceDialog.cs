@@ -23,6 +23,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             AddDialog(new ResourceGroupDialog(nameof(ResourceGroupDialog)));
+            AddDialog(new StorageAccountDialog(nameof(StorageAccountDialog)));
 
             InitialDialogId = nameof(WaterfallDialog);
         }
