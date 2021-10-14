@@ -36,11 +36,12 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new ChoicePrompt("LocationChoicePrompt"));
             AddDialog(new ChoicePrompt("RGChoicePrompt"));
+            AddDialog(new ChoicePrompt("SkuChoicePrompt"));
         }
 
         private async Task<DialogTurnResult> ResourceGroupStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var groups = GetResourceGroups().Take(3).Select((rg) => {return rg.Data.Name;}).ToList();
+            var groups = GetResourceGroups().Select((rg) => {return rg.Data.Name;}).ToList();
             var choices = ChoiceFactory.ToChoices(groups);
             return await stepContext.PromptAsync("RGChoicePrompt", 
                 new PromptOptions 
@@ -53,7 +54,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private async Task<DialogTurnResult> NameStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             // save the result from the previous step
-            stepContext.Values["resourceGroup"] = stepContext.Result;
+            stepContext.Values["resourceGroup"] = ((FoundChoice)stepContext.Result).Value;
 
             return await stepContext.PromptAsync(
                 nameof(TextPrompt), 
@@ -80,10 +81,10 @@ namespace Microsoft.BotBuilderSamples.Dialogs
         private async Task<DialogTurnResult> SkuStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken) 
         {
             // save the result from the previous step
-            stepContext.Values["location"] = stepContext.Result;
+            stepContext.Values["location"] = ((FoundChoice)stepContext.Result).Value;;
 
             // prompt for the location
-            return await stepContext.PromptAsync(nameof(ChoicePrompt),
+            return await stepContext.PromptAsync("SkuChoicePrompt",
                 new PromptOptions
                 {
                     Prompt = MessageFactory.Text("Pick a sku for the storage account."),
@@ -127,7 +128,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var subscription = armClient.DefaultSubscription;
             var resourceGroupContainer = subscription.GetResourceGroups();
             
-            return resourceGroupContainer.GetAll(null, 3).GetEnumerator().ToIEnumerable();
+            return resourceGroupContainer.GetAll("tagName eq 'hackathon' and tagValue eq 'azbuddy'").GetEnumerator().ToIEnumerable();
         }
     }
 }

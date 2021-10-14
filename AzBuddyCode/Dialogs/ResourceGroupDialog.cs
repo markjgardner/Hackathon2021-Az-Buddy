@@ -68,6 +68,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 var subscription = armClient.DefaultSubscription;
                 var resourceGroupContainer = subscription.GetResourceGroups();
                 var resourceGroupData = new ResourceGroupData(location);
+                resourceGroupData.Tags.Add("hackathon", "azbuddy");
                 var resourceGroup = await resourceGroupContainer.CreateOrUpdateAsync(
                     name, 
                     resourceGroupData, 
