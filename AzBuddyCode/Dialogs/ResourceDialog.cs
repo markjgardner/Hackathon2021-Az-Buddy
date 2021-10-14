@@ -23,6 +23,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             AddDialog(new ResourceGroupDialog(nameof(ResourceGroupDialog)));
+            AddDialog(new StorageAccountDialog(nameof(StorageAccountDialog)));
 
             InitialDialogId = nameof(WaterfallDialog);
         }
@@ -33,7 +34,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             new PromptOptions
             {
                 Prompt = MessageFactory.Text("Please enter the resource type you wish to create."),
-                Choices = ChoiceFactory.ToChoices(new List<string>{"resource group"}),
+                Choices = ChoiceFactory.ToChoices(new List<string>{"resource group", "storage account"}),
             }, cancellationToken);            
         }
 
@@ -47,6 +48,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             {
                 case "resource group":
                     return await stepContext.BeginDialogAsync(nameof(ResourceGroupDialog), null, cancellationToken);
+                case "storage account":
+                    return await stepContext.BeginDialogAsync(nameof(StorageAccountDialog), null, cancellationToken);
             }
 
             await stepContext.Context.SendActivityAsync(
