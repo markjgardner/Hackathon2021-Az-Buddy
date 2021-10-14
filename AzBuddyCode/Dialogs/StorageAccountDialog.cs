@@ -41,8 +41,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> ResourceGroupStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var groups = GetResourceGroups().Select((rg) => {return rg.Data.Name;}).ToList();
-            var choices = ChoiceFactory.ToChoices(groups);
+            var groups = await GetResourceGroupsAsync(cancellationToken);            
+            var choices = ChoiceFactory.ToChoices(groups.Select(x=>x.Data.Name).ToList());
+            
             return await stepContext.PromptAsync("RGChoicePrompt", 
                 new PromptOptions 
                 { 
@@ -122,13 +123,15 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }
 
-        private IEnumerable<ResourceGroup> GetResourceGroups()
+
+        private ValueTask<List<ResourceGroup>> GetResourceGroupsAsync(CancellationToken cancellationToken)
         {
             var armClient = new ArmClient(new DefaultAzureCredential());
             var subscription = armClient.DefaultSubscription;
             var resourceGroupContainer = subscription.GetResourceGroups();
             
-            return resourceGroupContainer.GetAll("tagName eq 'hackathon' and tagValue eq 'azbuddy'").GetEnumerator().ToIEnumerable();
+            var pageable = resourceGroupContainer.GetAllAsync("tagName eq 'hackathon' and tagValue eq 'azbuddy'", null, cancellationToken);            
+            return pageable.ToListAsync(cancellationToken);
         }
     }
 }
