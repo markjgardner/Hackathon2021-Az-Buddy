@@ -34,15 +34,15 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
             AddDialog(new TextPrompt(nameof(TextPrompt)));
-            AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
+            AddDialog(new ChoicePrompt("LocationChoicePrompt"));
+            AddDialog(new ChoicePrompt("RGChoicePrompt"));
         }
 
         private async Task<DialogTurnResult> ResourceGroupStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var groups = GetResourceGroups().Select((rg) => {return rg.Data.Name;}).ToList();
+            var groups = GetResourceGroups().Take(3).Select((rg) => {return rg.Data.Name;}).ToList();
             var choices = ChoiceFactory.ToChoices(groups);
-            return await stepContext.PromptAsync(
-                nameof(TextPrompt), 
+            return await stepContext.PromptAsync("RGChoicePrompt", 
                 new PromptOptions 
                 { 
                     Prompt = MessageFactory.Text("Which resource group would you like to deploy the storage account into?"),
@@ -69,7 +69,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             stepContext.Values["name"] = stepContext.Result;
 
             // prompt for the location
-            return await stepContext.PromptAsync(nameof(ChoicePrompt),
+            return await stepContext.PromptAsync("LocationChoicePrompt",
                 new PromptOptions
                 {
                     Prompt = MessageFactory.Text("Enter the azure location."),
@@ -127,7 +127,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var subscription = armClient.DefaultSubscription;
             var resourceGroupContainer = subscription.GetResourceGroups();
             
-            return resourceGroupContainer.GetAll().GetEnumerator().ToIEnumerable();
+            return resourceGroupContainer.GetAll(null, 3).GetEnumerator().ToIEnumerable();
         }
     }
 }

@@ -34,7 +34,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             new PromptOptions
             {
                 Prompt = MessageFactory.Text("Please enter the resource type you wish to create."),
-                Choices = ChoiceFactory.ToChoices(new List<string>{"resource group"}),
+                Choices = ChoiceFactory.ToChoices(new List<string>{"resource group", "storage account"}),
             }, cancellationToken);            
         }
 
