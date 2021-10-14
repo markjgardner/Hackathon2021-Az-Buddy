@@ -109,7 +109,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             var creds = new DefaultAzureCredential();
             var armClient = new ArmClient(creds);
             var subscription = armClient.DefaultSubscription;
-            var storage = new StorageManagementClient(subscription.Id, creds).StorageAccounts;
+            var storage = new StorageManagementClient(subscription.Id.SubscriptionId, creds).StorageAccounts;
             var storageParams = new StorageAccountCreateParameters(new Sku(sku), Kind.StorageV2, location);
             var rawResult = await storage.StartCreateAsync(resourceGroup, name, storageParams);
             var storageAccount = (await rawResult.WaitForCompletionAsync()).Value;
