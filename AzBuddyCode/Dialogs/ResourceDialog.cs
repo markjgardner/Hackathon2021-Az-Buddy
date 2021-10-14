@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.ResourceManager;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Dialogs.Choices;
@@ -11,7 +12,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class ResourceDialog : ComponentDialog
     {
-        public ResourceDialog()
+        public ResourceDialog(ArmClient armclient)
             : base("resource")
         {         
             var waterfallSteps = new WaterfallStep[]
@@ -22,8 +23,8 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
-            AddDialog(new ResourceGroupDialog(nameof(ResourceGroupDialog)));
-            AddDialog(new StorageAccountDialog(nameof(StorageAccountDialog)));
+            AddDialog(new ResourceGroupDialog("ResourceGroupDialog", armclient));
+            AddDialog(new StorageAccountDialog("StorageAccountDialog", armclient));
 
             InitialDialogId = nameof(WaterfallDialog);
         }
@@ -47,9 +48,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             switch(resourceType)
             {
                 case "resource group":
-                    return await stepContext.BeginDialogAsync(nameof(ResourceGroupDialog), null, cancellationToken);
+                    return await stepContext.BeginDialogAsync("ResourceGroupDialog", null, cancellationToken);
                 case "storage account":
-                    return await stepContext.BeginDialogAsync(nameof(StorageAccountDialog), null, cancellationToken);
+                    return await stepContext.BeginDialogAsync("StorageAccountDialog", null, cancellationToken);
             }
 
             await stepContext.Context.SendActivityAsync(

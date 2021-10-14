@@ -19,9 +19,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class StorageAccountDialog : ComponentDialog
     {
-        public StorageAccountDialog(string dialogID) 
+        private ArmClient armClient { get; set; }
+        public StorageAccountDialog(string dialogID, ArmClient armclient) 
             : base(dialogID)
         {   
+            this.armClient = armclient;
             var waterfallSteps =  new WaterfallStep[]
             {
                 ResourceGroupStepAsync,
@@ -126,7 +128,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private ValueTask<List<ResourceGroup>> GetResourceGroupsAsync(CancellationToken cancellationToken)
         {
-            var armClient = new ArmClient(new DefaultAzureCredential());
             var subscription = armClient.DefaultSubscription;
             var resourceGroupContainer = subscription.GetResourceGroups();
             
