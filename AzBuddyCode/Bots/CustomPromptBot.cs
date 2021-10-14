@@ -39,28 +39,6 @@ namespace Microsoft.BotBuilderSamples
             await _userState.SaveChangesAsync(turnContext, false, cancellationToken);
         }
 
-        // Messages sent to the user.
-        private const string WelcomeMessage = 
-            "This is a simple Welcome Bot sample. This bot will introduce you " +
-            "to welcoming and greeting users. You can say 'intro' to see the " +
-            "introduction card. If you are running this bot in the Bot Framework " +
-            "Emulator, press the 'Start Over' button to simulate user joining " +
-            "a bot or a channel";
-
-        private const string InfoMessage = 
-            "You are seeing this message because the bot received at least one " +
-            "'ConversationUpdate' event, indicating you (and possibly others) " +
-            "joined the conversation. If you are using the emulator, pressing " +
-            "the 'Start Over' button to trigger this event again. The specifics " +
-            "of the 'ConversationUpdate' event depends on the channel. You can " +
-            "read more information at: " +
-            "https://aka.ms/about-botframework-welcome-user";
-
-        private const string LocaleMessage = 
-            "You can use the activity's 'GetLocale()' method to welcome the user " +
-            "using the locale received from the channel. " + 
-            "If you are using the Emulator, you can set this value in Settings.";
-
         private const string PatternMessage = 
             "Welcome to the Az Buddy Bot. This bot will help you create azure resources.";
 
@@ -70,16 +48,20 @@ namespace Microsoft.BotBuilderSamples
             {
                 if(member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    await turnContext.SendActivityAsync($"Hi there - {member.Name}. {WelcomeMessage}", cancellationToken: cancellationToken);
-                    await turnContext.SendActivityAsync(InfoMessage, cancellationToken: cancellationToken);
-                    await turnContext.SendActivityAsync($"{LocaleMessage} Current locale is '{turnContext.Activity.GetLocale()}'.", cancellationToken: cancellationToken);
                     await turnContext.SendActivityAsync(PatternMessage, cancellationToken: cancellationToken);
-
                     
-                    // Run the Dialog with the new message Activity.
+                    // Start the dialog
                     await _dialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
                 }
             }
         }
+
+        protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
+        {
+                // Maintain the Dialog
+                await _dialog.RunAsync(turnContext, _conversationState.CreateProperty<DialogState>(nameof(DialogState)), cancellationToken);
+
+        }
+
     }
 }
