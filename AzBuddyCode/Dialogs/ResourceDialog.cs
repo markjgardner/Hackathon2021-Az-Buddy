@@ -19,17 +19,20 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             {
                 ResourceTypeStepAsync,
                 ResourceStepAsync,
+                AskToContinueAsync,
+                ContinueOrNotAsync
             };            
 
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
+            AddDialog(new ChoicePrompt("AskToContinue"));
             AddDialog(new ResourceGroupDialog("ResourceGroupDialog", armclient));
             AddDialog(new StorageAccountDialog("StorageAccountDialog", armclient));
 
             InitialDialogId = nameof(WaterfallDialog);
         }
 
-        private static async Task<DialogTurnResult> ResourceTypeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> ResourceTypeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             return await stepContext.PromptAsync(nameof(ChoicePrompt),
             new PromptOptions
@@ -39,7 +42,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             }, cancellationToken);            
         }
 
-        private static async Task<DialogTurnResult> ResourceStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> ResourceStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {            
             // the previous step set the resource type from the choices, set it here
             var resourceType = ((FoundChoice)stepContext.Result).Value;
@@ -55,8 +58,28 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
             await stepContext.Context.SendActivityAsync(
                 MessageFactory.Text($"Unable to find resource type {resourceType}"), 
-                cancellationToken);            
+                cancellationToken);
 
+            return await stepContext.EndDialogAsync(null, cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> AskToContinueAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            return await stepContext.PromptAsync("AskToContinue",
+            new PromptOptions
+            {
+                Prompt = MessageFactory.Text("Would you like to create another resource?"),
+                Choices = ChoiceFactory.ToChoices(new List<string> {"Yes", "No"})
+            }, cancellationToken);
+        }
+
+        private async Task<DialogTurnResult> ContinueOrNotAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        {
+            var answer = ((FoundChoice)stepContext.Result).Value;
+            if (string.Equals(answer,"yes", System.StringComparison.InvariantCultureIgnoreCase))
+                return await stepContext.ReplaceDialogAsync(InitialDialogId, null, cancellationToken);
+            
+            await stepContext.Context.SendActivityAsync(MessageFactory.Text("Goodbye!"), cancellationToken);
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }
     }

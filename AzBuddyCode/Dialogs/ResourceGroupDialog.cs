@@ -77,7 +77,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                     cancellationToken);
                 
                 await stepContext.Context.SendActivityAsync(
-                    MessageFactory.Text($"Resource Group {name} as {resourceGroup.Id}"), 
+                    MessageFactory.Text($"Resource Group {name} as {resourceGroup.Value.Id}"), 
                     cancellationToken);
             }
             catch(Exception ex)
