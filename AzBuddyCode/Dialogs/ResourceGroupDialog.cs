@@ -16,9 +16,11 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 {
     public class ResourceGroupDialog : ComponentDialog
     {
-        public ResourceGroupDialog(string dialogID) 
+        private ArmClient armClient { get; set; }
+        public ResourceGroupDialog(string dialogID, ArmClient armclient) 
             : base(dialogID)
         {   
+            this.armClient = armclient;
             InitialDialogId = nameof(WaterfallDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
@@ -64,7 +66,6 @@ namespace Microsoft.BotBuilderSamples.Dialogs
                 MessageFactory.Text($"Creating Resource Group {name} in {location}"), 
                 cancellationToken);
             try{
-                var armClient = new ArmClient(new DefaultAzureCredential());
                 var subscription = armClient.DefaultSubscription;
                 var resourceGroupContainer = subscription.GetResourceGroups();
                 var resourceGroupData = new ResourceGroupData(location);
