@@ -41,9 +41,9 @@ namespace Microsoft.BotBuilderSamples.Dialogs
 
         private async Task<DialogTurnResult> ResourceGroupStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var groups = await GetResourceGroupsAsync(cancellationToken);
-            
+            var groups = await GetResourceGroupsAsync(cancellationToken);            
             var choices = ChoiceFactory.ToChoices(groups.Select(x=>x.Data.Name).ToList());
+            
             return await stepContext.PromptAsync("RGChoicePrompt", 
                 new PromptOptions 
                 { 
@@ -122,6 +122,7 @@ namespace Microsoft.BotBuilderSamples.Dialogs
             // Remember to call EndAsync to indicate to the runtime that this is the end of our waterfall.
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }
+
 
         private ValueTask<List<ResourceGroup>> GetResourceGroupsAsync(CancellationToken cancellationToken)
         {
